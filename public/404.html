@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GullyStat</title>
+    <script>
+      var path = window.location.pathname.replace('/gullystat', '') || '/';
+      sessionStorage.setItem('redirect', path);
+      window.location.replace('/gullystat/');
+    </script>
+  </head>
+  <body></body>
+</html>
