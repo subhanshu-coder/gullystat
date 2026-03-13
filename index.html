@@ -2,11 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/gullystat/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/gullystat/vite.svg" />    
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+  var redirect = sessionStorage.getItem('redirect');
+  if (redirect) {
+    sessionStorage.removeItem('redirect');
+    window.history.replaceState(null, null, '/gullystat' + redirect);
+  }
+</script>
     <title>gullystat</title>
-    <script type="module" crossorigin src="/gullystat/assets/index-cMiJ_Ac9.js"></script>
-    <link rel="stylesheet" crossorigin href="/gullystat/assets/index-EuFuhGS3.css">
+    <script type="module" crossorigin src="/gullystat/assets/index-BgHdfo-Y.js"></script>
+    <link rel="stylesheet" crossorigin href="/gullystat/assets/index-B8g3RJ1d.css">
   </head>
   <body>
     <div id="root"></div>
