@@ -19,15 +19,15 @@ const batters = [
   { name: 'Suresh K', star: false, r: 38, b: 22, sr: 172 },
 ]
 const statsA = [
-  { v: '9',   l: 'Fours', gold: true },
-  { v: '5',   l: 'Sixes', gold: true },
-  { v: '8',   l: 'Wkts',  red: true  },
-  { v: '48',  l: "P'ship" },
+  { v: '9',  l: 'Fours',  gold: true },
+  { v: '5',  l: 'Sixes',  gold: true },
+  { v: '8',  l: 'Wkts',   red: true  },
+  { v: '48', l: "P'ship"             },
 ]
 const statsB = [
-  { v: '9.3',  l: 'Run Rate' },
+  { v: '9.3',  l: 'Run Rate'            },
   { v: '30.7', l: 'Req Rate', red: true },
-  { v: '152',  l: 'Str Rate' },
+  { v: '152',  l: 'Str Rate'            },
 ]
 const comms = [
   { ball: '6', type: 's', text: '18.4 — Rahul smashes over long-on! Massive six!' },
@@ -35,9 +35,9 @@ const comms = [
   { ball: '4', type: 'f', text: '17.1 — Driven through covers, races away!'      },
 ]
 const summary = [
-  { l: "P'ship", v: '48 runs'    },
-  { l: 'Bndrys', v: '9×4  5×6'  },
-  { l: 'Econ',   v: 'Vikram 6.0'},
+  { l: "P'ship", v: '48 runs'     },
+  { l: 'Bndrys', v: '9×4  5×6'   },
+  { l: 'Econ',   v: 'Vikram 6.0' },
 ]
 
 function ballCls(b) {
@@ -52,7 +52,6 @@ function commCls(t) {
   return 'ct ct-f'
 }
 
-/* ── Faint cricket field SVG decoration ── */
 function BgField() {
   return (
     <svg className="bg-field" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
@@ -79,7 +78,6 @@ function BgField() {
   )
 }
 
-/* ── Pure-CSS Phone ── */
 function PhoneMockup() {
   return (
     <div className="phone">
@@ -90,7 +88,6 @@ function PhoneMockup() {
         <div className="phone-screen">
           <div className="ph-island" />
 
-          {/* Status */}
           <div className="ph-status">
             <span className="ph-time">9:41</span>
             <div className="ph-icons">
@@ -109,7 +106,6 @@ function PhoneMockup() {
             </div>
           </div>
 
-          {/* Header */}
           <div className="ph-header">
             <div className="ph-header-left">
               <span className="ph-appname">GullyStat</span>
@@ -121,7 +117,6 @@ function PhoneMockup() {
             </div>
           </div>
 
-          {/* Scorecard */}
           <div className="ph-block">
             <div className="ph-lbl">📋 Scorecard · Overum 20</div>
             <div className="ph-teams">
@@ -140,7 +135,6 @@ function PhoneMockup() {
             <div className="ph-chase">⚡ Need 46 off 9 · RRR 30.67</div>
           </div>
 
-          {/* Row 2: Batting + right col */}
           <div className="ph-row2">
             <div className="ph-block ph-batting-block">
               <div className="ph-lbl">🏏 Batting</div>
@@ -160,7 +154,6 @@ function PhoneMockup() {
                 <div className="ph-bstats"><span className="ph-brun">2</span><span className="ph-bball">/18 (3)</span></div>
               </div>
             </div>
-
             <div className="ph-right-col">
               <div className="ph-block ph-balls-block">
                 <div className="ph-lbl">🎯 Last 6</div>
@@ -190,7 +183,6 @@ function PhoneMockup() {
             </div>
           </div>
 
-          {/* Commentary */}
           <div className="ph-block ph-comm-block">
             <div className="ph-lbl">🎙️ Commentary</div>
             {comms.map((c,i) => (
@@ -201,7 +193,6 @@ function PhoneMockup() {
             ))}
           </div>
 
-          {/* Report + Summary */}
           <div className="ph-bottom-row">
             <div className="ph-block ph-report-block">
               <div className="ph-lbl">🤖 AI Report</div>
@@ -222,7 +213,6 @@ function PhoneMockup() {
             </div>
           </div>
 
-          {/* Bottom nav */}
           <div className="ph-nav">
             {[
               {ic:'🏠',l:'Home'},{ic:'📊',l:'Stats'},{ic:'🏏',l:'Live'},
@@ -240,16 +230,12 @@ function PhoneMockup() {
   )
 }
 
-/* ══════════════════════════════════════
-   MAIN PAGE
-══════════════════════════════════════ */
 export default function Landing() {
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
     <>
-      {/* ── Fixed background layers — OUTSIDE .landing so they don't affect flex layout ── */}
       <div className="bg-layer bg-base"    />
       <div className="bg-layer bg-grad"    />
       <div className="bg-layer bg-dots"    />
@@ -257,17 +243,13 @@ export default function Landing() {
       <div className="bg-layer bg-noise"   />
       <BgField />
 
-      {/* ── Page shell ── */}
       <div className="landing">
-
-        {/* NAVBAR */}
         <nav className="top-nav">
           <div className="nav-inner">
             <div className="nav-brand" onClick={() => { navigate('/'); setMenuOpen(false) }}>
               <img src={logo} alt="GullyStat" className="nav-logo" />
               <span className="nav-name">GullyStat</span>
             </div>
-
             <div className="nav-links">
               {navLinks.map(l => (
                 <button key={l.label} className="nav-link" onClick={() => navigate(l.path)}>
@@ -275,12 +257,10 @@ export default function Landing() {
                 </button>
               ))}
             </div>
-
             <div className="nav-cta-desktop">
               <button className="nav-login"  onClick={() => navigate('/login')}>Login</button>
               <button className="nav-launch" onClick={() => navigate('/dashboard')}>Launch App</button>
             </div>
-
             <button
               className={'nav-burger' + (menuOpen ? ' nav-burger-open' : '')}
               onClick={() => setMenuOpen(o => !o)}
@@ -289,8 +269,6 @@ export default function Landing() {
               <span /><span /><span />
             </button>
           </div>
-
-          {/* Mobile dropdown */}
           <div className={'nav-mobile-menu' + (menuOpen ? ' nav-mobile-open' : '')}>
             {navLinks.map(l => (
               <button key={l.label} className="nav-mobile-link"
@@ -304,36 +282,28 @@ export default function Landing() {
           </div>
         </nav>
 
-        {/* HERO */}
         <main className="hero">
-
-          {/* LEFT */}
           <div className="hero-left">
             <div className="badge">
               <span className="badge-dot" />
               Local Cricket · Professional Analytics
             </div>
-
             <h1 className="title">
               Your gully.<br />
               Your stats.<br />
               <span className="title-accent">Your legacy.</span>
             </h1>
-
             <p className="subtitle">
               What Cricinfo does for internationals —<br />
               GullyStat does for your mohalla.
             </p>
-
             <div className="tag-row">
               {tags.map(t => <span className="tag" key={t}>{t}</span>)}
             </div>
-
             <div className="btn-row">
               <button className="btn-main"    onClick={() => navigate('/dashboard')}>🏏 Start Tracking</button>
               <button className="btn-outline" onClick={() => navigate('/features')}>See Features →</button>
             </div>
-
             <div className="stats-bar">
               {[
                 { v: '6',    l: 'Game Modes' },
@@ -349,7 +319,6 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* RIGHT */}
           <div className="hero-right">
             <div className="phone-glow" />
             <PhoneMockup />
@@ -358,7 +327,6 @@ export default function Landing() {
               <span>Available on Mobile</span>
             </div>
           </div>
-
         </main>
       </div>
     </>

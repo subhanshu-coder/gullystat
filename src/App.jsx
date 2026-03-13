@@ -1,29 +1,31 @@
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import logo from './assets/logo.png'
-import Landing      from './pages/Landing'
-import Dashboard    from './pages/Dashboard'
-import StartMatch   from './pages/StartMatch'
-import LiveScorer   from './pages/LiveScorer'
-import Scorecard    from './pages/Scorecard'
+import Landing       from './pages/Landing'
+import Features      from './pages/Features'
+import Dashboard     from './pages/Dashboard'
+import StartMatch    from './pages/StartMatch'
+import LiveScorer    from './pages/LiveScorer'
+import Scorecard     from './pages/Scorecard'
 import PlayerProfile from './pages/PlayerProfile'
-import Leaderboard  from './pages/Leaderboard'
-import Challenges   from './pages/Challenges'
-import Badges       from './pages/Badges'
-import HeadToHead   from './pages/HeadToHead'
-import Tournaments  from './pages/Tournaments'
-import GhostProfile from './pages/GhostProfile'
+import Leaderboard   from './pages/Leaderboard'
+import Challenges    from './pages/Challenges'
+import Badges        from './pages/Badges'
+import HeadToHead    from './pages/HeadToHead'
+import Tournaments   from './pages/Tournaments'
+import GhostProfile  from './pages/GhostProfile'
+import ClickEffect   from './components/ClickEffect'
 import './App.css'
 
 const navItems = [
-  { path: '/dashboard',    icon: '🏠', label: 'Dashboard'    },
-  { path: '/start-match',  icon: '🏏', label: 'New Match'    },
-  { path: '/leaderboard',  icon: '🏆', label: 'Leaderboard'  },
-  { path: '/challenges',   icon: '⚡', label: 'Challenges'   },
-  { path: '/badges',       icon: '🎖️', label: 'Badges'       },
-  { path: '/head-to-head', icon: '⚔️', label: 'Head to Head' },
-  { path: '/tournaments',  icon: '🥇', label: 'Tournaments'  },
-  { path: '/ghost-profile',icon: '👻', label: 'Ghost Profile'},
+  { path: '/dashboard',     icon: '🏠', label: 'Dashboard'    },
+  { path: '/start-match',   icon: '🏏', label: 'New Match'    },
+  { path: '/leaderboard',   icon: '🏆', label: 'Leaderboard'  },
+  { path: '/challenges',    icon: '⚡', label: 'Challenges'   },
+  { path: '/badges',        icon: '🎖️', label: 'Badges'       },
+  { path: '/head-to-head',  icon: '⚔️', label: 'Head to Head' },
+  { path: '/tournaments',   icon: '🥇', label: 'Tournaments'  },
+  { path: '/ghost-profile', icon: '👻', label: 'Ghost Profile'},
 ]
 
 function Layout({ children }) {
@@ -34,13 +36,10 @@ function Layout({ children }) {
 
   return (
     <div className="layout">
-
-      {/* Glitch bg canvas */}
       <canvas id="bg-canvas" />
       <div className="bg-vignette" />
       <div className="bg-scanlines" />
 
-      {/* Sidebar */}
       <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-header">
           <img src={logo} alt="GullyStat" className="sidebar-logo" />
@@ -63,7 +62,6 @@ function Layout({ children }) {
         </button>
       </aside>
 
-      {/* Main */}
       <div className="main">
         <header className="topbar">
           <span className="topbar-page">{pageLabel}</span>
@@ -75,7 +73,6 @@ function Layout({ children }) {
         </header>
         <main className="content">{children}</main>
       </div>
-
     </div>
   )
 }
@@ -83,25 +80,29 @@ function Layout({ children }) {
 export default function App() {
   return (
     <BrowserRouter basename="/gullystat">
-      <Routes>
 
-        {/* Landing page — no sidebar */}
-        <Route path="/" element={<Landing />} />
+      {/* ── Click burst effect — fires on every page, never blocks clicks ── */}
+      <ClickEffect />
+
+      <Routes>
+        {/* Landing pages — no sidebar */}
+        <Route path="/"         element={<Landing  />} />
+        <Route path="/features" element={<Features />} />
 
         {/* App pages — with sidebar */}
-        <Route path="/dashboard"    element={<Layout><Dashboard /></Layout>} />
-        <Route path="/start-match"  element={<Layout><StartMatch /></Layout>} />
-        <Route path="/live-scorer"  element={<Layout><LiveScorer /></Layout>} />
-        <Route path="/scorecard/:id" element={<Layout><Scorecard /></Layout>} />
-        <Route path="/player/:id"   element={<Layout><PlayerProfile /></Layout>} />
-        <Route path="/leaderboard"  element={<Layout><Leaderboard /></Layout>} />
-        <Route path="/challenges"   element={<Layout><Challenges /></Layout>} />
-        <Route path="/badges"       element={<Layout><Badges /></Layout>} />
-        <Route path="/head-to-head" element={<Layout><HeadToHead /></Layout>} />
-        <Route path="/tournaments"  element={<Layout><Tournaments /></Layout>} />
-        <Route path="/ghost-profile" element={<Layout><GhostProfile /></Layout>} />
-
+        <Route path="/dashboard"      element={<Layout><Dashboard /></Layout>} />
+        <Route path="/start-match"    element={<Layout><StartMatch /></Layout>} />
+        <Route path="/live-scorer"    element={<Layout><LiveScorer /></Layout>} />
+        <Route path="/scorecard/:id"  element={<Layout><Scorecard /></Layout>} />
+        <Route path="/player/:id"     element={<Layout><PlayerProfile /></Layout>} />
+        <Route path="/leaderboard"    element={<Layout><Leaderboard /></Layout>} />
+        <Route path="/challenges"     element={<Layout><Challenges /></Layout>} />
+        <Route path="/badges"         element={<Layout><Badges /></Layout>} />
+        <Route path="/head-to-head"   element={<Layout><HeadToHead /></Layout>} />
+        <Route path="/tournaments"    element={<Layout><Tournaments /></Layout>} />
+        <Route path="/ghost-profile"  element={<Layout><GhostProfile /></Layout>} />
       </Routes>
+
     </BrowserRouter>
   )
 }
