@@ -1,122 +1,149 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import logo from '../assets/logo.png'
 import './Landing.css'
 
+/* ─── nav links scroll to sections ─── */
 const navLinks = [
-  { label: 'Features', path: '/features' },
-  { label: 'About',    path: '/about'    },
-  { label: 'Showcase', path: '/showcase' },
-  { label: 'Contact',  path: '/contact'  },
-]
-const tags = [
-  'Hundrum · 100-ball', 'Overum · Custom',
-  'Live Scoring', 'AI Reports', 'Ghost Mode', 'Leaderboards',
-]
-const balls   = ['4', 'W', '1', '6', '1', '2']
-const batters = [
-  { name: 'Rahul S',  star: true,  r: 67, b: 44, sr: 152 },
-  { name: 'Suresh K', star: false, r: 38, b: 22, sr: 172 },
-]
-const statsA = [
-  { v: '9',  l: 'Fours',  gold: true },
-  { v: '5',  l: 'Sixes',  gold: true },
-  { v: '8',  l: 'Wkts',   red: true  },
-  { v: '48', l: "P'ship"             },
-]
-const statsB = [
-  { v: '9.3',  l: 'Run Rate'            },
-  { v: '30.7', l: 'Req Rate', red: true },
-  { v: '152',  l: 'Str Rate'            },
-]
-const comms = [
-  { ball: '6', type: 's', text: '18.4 — Rahul smashes over long-on! Massive six!' },
-  { ball: 'W', type: 'w', text: '17.2 — Caught at mid-off! Arjun out for 28'     },
-  { ball: '4', type: 'f', text: '17.1 — Driven through covers, races away!'      },
-]
-const summary = [
-  { l: "P'ship", v: '48 runs'     },
-  { l: 'Bndrys', v: '9×4  5×6'   },
-  { l: 'Econ',   v: 'Vikram 6.0' },
+  { label: 'Features',  id: 'features'  },
+  { label: 'Formats',   id: 'formats'   },
+  { label: 'About',     id: 'about'     },
 ]
 
-function ballCls(b) {
-  if (b === 'W') return 'pb pb-w'
-  if (b === '6') return 'pb pb-s'
-  if (b === '4') return 'pb pb-f'
-  return 'pb pb-n'
-}
-function commCls(t) {
-  if (t === 's') return 'ct ct-s'
-  if (t === 'w') return 'ct ct-w'
-  return 'ct ct-f'
-}
+/* ─── features data ─── */
+const features = [
+  {
+    id: 'live', emoji: '🏏', tag: 'Core',
+    title: 'Live Ball-by-Ball Scoring',
+    desc: 'Log every delivery in seconds. Real-time run rates, required rates, partnership tracker, wagonwheel, and full fall-of-wickets — all updating live as you play.',
+    bullets: ['Ball-by-ball entry', 'Live RRR calculator', 'Partnership tracker', 'Fall of wickets log'],
+    accent: '#f0c840',
+  },
+  {
+    id: 'formats', emoji: '🎮', tag: 'Game Modes',
+    title: '6 Game Formats',
+    desc: 'Hundrum (100-ball), Overum (custom overs), Solo challenges, Team vs Team, Ghost Mode battles, and tournament brackets. Every variant your mohalla plays.',
+    bullets: ['Hundrum · 100-ball format', 'Overum · set your own overs', 'Solo challenge mode', 'Team vs Team + tournaments'],
+    accent: '#60c8f0',
+  },
+  {
+    id: 'ai', emoji: '🤖', tag: 'AI',
+    title: 'AI Match Reports',
+    desc: 'After every match GullyStat writes a full broadcast-style report — star performers, momentum shifts, turning points, and man of the match. Share it instantly.',
+    bullets: ['Auto-generated after every match', 'Star performer highlights', 'Momentum shift analysis', 'One-tap share as image'],
+    accent: '#a78bfa',
+  },
+  {
+    id: 'stats', emoji: '📊', tag: 'Analytics',
+    title: 'Deep Player Stats',
+    desc: 'Career averages, strike rates, economy, milestones, and form graphs — tracked separately per format. Watch your journey from gully rookie to mohalla legend.',
+    bullets: ['Batting + bowling averages', 'Format-split career stats', 'Milestone tracking (50s, 100s)', 'Form graph over last 10 matches'],
+    accent: '#34d399',
+  },
+  {
+    id: 'ghost', emoji: '👻', tag: 'Ghost Mode',
+    title: 'Ghost Profile',
+    desc: 'Play in the shadows. Build a reputation without revealing your identity. Appear on leaderboards as "???" — then reveal yourself when the time is right.',
+    bullets: ['Anonymous identity', 'Leaderboard slot shows "???"', 'Reveal yourself anytime', 'Build the mystery'],
+    accent: '#f87171',
+  },
+  {
+    id: 'social', emoji: '🏆', tag: 'Social',
+    title: 'Leaderboards & H2H',
+    desc: 'Mohalla-level leaderboards, head-to-head records, rivalry scores. Know exactly who you own and who owns you — with receipts.',
+    bullets: ['Mohalla leaderboards', 'Head-to-head records', 'Rivalry tracking', 'Season & all-time rankings'],
+    accent: '#fbbf24',
+  },
+]
 
-function BgField() {
-  return (
-    <svg className="bg-field" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="bfg" cx="50%" cy="50%" r="50%">
-          <stop offset="0%"   stopColor="#1e4814" stopOpacity="0.22" />
-          <stop offset="55%"  stopColor="#0e2808" stopOpacity="0.10" />
-          <stop offset="100%" stopColor="#060e04" stopOpacity="0"    />
-        </radialGradient>
-      </defs>
-      <ellipse cx="300" cy="300" rx="282" ry="282" fill="url(#bfg)" />
-      <ellipse cx="300" cy="300" rx="278" ry="278" fill="none" stroke="rgba(200,170,60,0.07)" strokeWidth="1.5" strokeDasharray="6,9" />
-      <ellipse cx="300" cy="300" rx="148" ry="148" fill="none" stroke="rgba(200,170,60,0.05)" strokeWidth="1"   strokeDasharray="4,8" />
-      <rect   x="286" y="172" width="28" height="256" rx="2" fill="rgba(130,110,40,0.08)" />
-      <line  x1="270" y1="220" x2="330" y2="220" stroke="rgba(230,200,100,0.11)" strokeWidth="1.5"/>
-      <line  x1="270" y1="380" x2="330" y2="380" stroke="rgba(230,200,100,0.11)" strokeWidth="1.5"/>
-      {[{x:55,y:55},{x:545,y:55},{x:55,y:545},{x:545,y:545}].map((p,i) => (
-        <g key={i}>
-          <line x1={p.x} y1={p.y} x2="300" y2="300" stroke="rgba(200,170,60,0.035)" strokeWidth="1"/>
-          <circle cx={p.x} cy={p.y} r="7" fill="rgba(240,200,64,0.08)" />
-        </g>
+const formatCards = [
+  { name: 'Hundrum', tag: '100-BALL',     color: '#3b82f6', desc: 'No overs, just 100 balls. Every delivery counts. Explosive, chaotic, addictive.' },
+  { name: 'Overum',  tag: 'CUSTOM OVERS', color: '#f0c840', desc: 'You set the rules. 5 overs, 10, 20 — your match, your terms.' },
+  { name: 'Solo',    tag: 'CHALLENGE',    color: '#34d399', desc: 'Set a target, bat alone against a ghost score. No team needed.' },
+  { name: 'Ghost',   tag: 'ANONYMOUS',    color: '#a78bfa', desc: 'Your stats are real. Your identity is hidden. Be the phantom of the mohalla.' },
+  { name: 'Team',    tag: 'CLASSIC',      color: '#f87171', desc: 'Full squad vs squad. Complete scorecard, batting & bowling stats.' },
+  { name: 'Tourney', tag: 'BRACKET',      color: '#fbbf24', desc: 'Mohalla championship mode. Knockout brackets, group stages, finals.' },
+]
+
+/* ═══════════════════════════════════════════
+   ANIMATED BUBBLE WAVE
+   Two SVG tiles side by side, track slides
+   left continuously — seamless infinite loop
+═══════════════════════════════════════════ */
+function BubbleWave({ parentBg, childBg, speed = '7s' }) {
+  const N = 13, STEP = 100, CY = 65, R = 56
+  const VBW = N * STEP
+
+  const Tile = () => (
+    <svg viewBox={`0 0 ${VBW} 100`} preserveAspectRatio="none"
+      xmlns="http://www.w3.org/2000/svg" className="bw-svg">
+      <rect x="0" y={CY} width={VBW} height={100 - CY} fill={childBg} />
+      {Array.from({ length: N }, (_, i) => (
+        <circle key={i} cx={i * STEP + STEP / 2} cy={CY} r={R} fill={childBg} />
       ))}
     </svg>
   )
+
+  return (
+    <div className="bw-wrap" style={{ background: parentBg }}>
+      <div className="bw-track" style={{ animationDuration: speed }}>
+        <Tile /><Tile />
+      </div>
+    </div>
+  )
 }
+
+/* ═══════════════════════════════════════════
+   PHONE MOCKUP
+═══════════════════════════════════════════ */
+const balls   = ['4','W','1','6','1','2']
+const batters = [
+  { name:'Rahul S',  star:true,  r:67, b:44, sr:152 },
+  { name:'Suresh K', star:false, r:38, b:22, sr:172 },
+]
+const statsA = [
+  {v:'9', l:'Fours',gold:true},{v:'5',l:'Sixes',gold:true},
+  {v:'8', l:'Wkts', red:true },{v:'48',l:"P'ship"},
+]
+const statsB = [
+  {v:'9.3', l:'Run Rate'},{v:'30.7',l:'Req Rate',red:true},{v:'152',l:'Str Rate'},
+]
+const comms = [
+  {ball:'6',type:'s',text:'18.4 — Rahul smashes over long-on! Massive six!'},
+  {ball:'W',type:'w',text:'17.2 — Caught at mid-off! Arjun out for 28'},
+  {ball:'4',type:'f',text:'17.1 — Driven through covers, races away!'},
+]
+const summary = [{l:"P'ship",v:'48 runs'},{l:'Bndrys',v:'9×4  5×6'},{l:'Econ',v:'Vikram 6.0'}]
+
+function bc(b){return b==='W'?'pb pb-w':b==='6'?'pb pb-s':b==='4'?'pb pb-f':'pb pb-n'}
+function cc(t){return t==='s'?'ct ct-s':t==='w'?'ct ct-w':'ct ct-f'}
 
 function PhoneMockup() {
   return (
     <div className="phone">
       <div className="phone-shell">
-        <div className="ph-btn ph-vol1" />
-        <div className="ph-btn ph-vol2" />
-        <div className="ph-btn ph-pwr"  />
+        <div className="ph-btn ph-vol1"/><div className="ph-btn ph-vol2"/><div className="ph-btn ph-pwr"/>
         <div className="phone-screen">
-          <div className="ph-island" />
-
+          <div className="ph-island"/>
           <div className="ph-status">
             <span className="ph-time">9:41</span>
             <div className="ph-icons">
               <svg width="11" height="8" viewBox="0 0 12 8" fill="none">
-                <rect x="0" y="4"   width="2" height="4"   rx="0.5" fill="rgba(242,237,228,0.55)"/>
+                <rect x="0" y="4" width="2" height="4" rx="0.5" fill="rgba(242,237,228,0.55)"/>
                 <rect x="3" y="2.5" width="2" height="5.5" rx="0.5" fill="rgba(242,237,228,0.65)"/>
-                <rect x="6" y="1"   width="2" height="7"   rx="0.5" fill="rgba(242,237,228,0.80)"/>
-                <rect x="9" y="0"   width="2" height="8"   rx="0.5" fill="rgba(242,237,228,1)"/>
-              </svg>
-              <svg width="13" height="10" viewBox="0 0 14 10" fill="none">
-                <path d="M7 2C9.2 2 11.2 2.9 12.6 4.4L14 3C12.2 1.1 9.7 0 7 0 4.3 0 1.8 1.1 0 3L1.4 4.4C2.8 2.9 4.8 2 7 2Z" fill="rgba(242,237,228,0.5)"/>
-                <path d="M7 5C8.3 5 9.5 5.5 10.4 6.4L11.8 5C10.5 3.7 8.8 3 7 3 5.2 3 3.5 3.7 2.2 5L3.6 6.4C4.5 5.5 5.7 5 7 5Z" fill="rgba(242,237,228,0.75)"/>
-                <circle cx="7" cy="9" r="1" fill="rgba(242,237,228,0.95)"/>
+                <rect x="6" y="1" width="2" height="7" rx="0.5" fill="rgba(242,237,228,0.80)"/>
+                <rect x="9" y="0" width="2" height="8" rx="0.5" fill="rgba(242,237,228,1)"/>
               </svg>
               <div className="ph-batt"><div className="ph-batt-fill"/><div className="ph-batt-tip"/></div>
             </div>
           </div>
-
           <div className="ph-header">
             <div className="ph-header-left">
               <span className="ph-appname">GullyStat</span>
               <span className="ph-appsub">Live Match</span>
             </div>
-            <div className="ph-live-pill">
-              <span className="ph-live-dot" />
-              <span>LIVE</span>
-            </div>
+            <div className="ph-live-pill"><span className="ph-live-dot"/><span>LIVE</span></div>
           </div>
-
           <div className="ph-block">
             <div className="ph-lbl">📋 Scorecard · Overum 20</div>
             <div className="ph-teams">
@@ -134,13 +161,12 @@ function PhoneMockup() {
             </div>
             <div className="ph-chase">⚡ Need 46 off 9 · RRR 30.67</div>
           </div>
-
           <div className="ph-row2">
             <div className="ph-block ph-batting-block">
               <div className="ph-lbl">🏏 Batting</div>
-              {batters.map((p,i) => (
+              {batters.map((p,i)=>(
                 <div key={i} className="ph-batter">
-                  <span className="ph-bname">{p.name}{p.star && <span className="ph-star"> ★</span>}</span>
+                  <span className="ph-bname">{p.name}{p.star&&<span className="ph-star"> ★</span>}</span>
                   <div className="ph-bstats">
                     <span className="ph-brun">{p.r}</span>
                     <span className="ph-bball">({p.b})</span>
@@ -148,7 +174,7 @@ function PhoneMockup() {
                   </div>
                 </div>
               ))}
-              <div className="ph-divider" />
+              <div className="ph-divider"/>
               <div className="ph-batter">
                 <span className="ph-bname ph-bowler">Vikram P <span className="ph-bowl-tag">bowl</span></span>
                 <div className="ph-bstats"><span className="ph-brun">2</span><span className="ph-bball">/18 (3)</span></div>
@@ -157,46 +183,28 @@ function PhoneMockup() {
             <div className="ph-right-col">
               <div className="ph-block ph-balls-block">
                 <div className="ph-lbl">🎯 Last 6</div>
-                <div className="ph-balls">
-                  {balls.map((b,i) => <span key={i} className={ballCls(b)}>{b}</span>)}
-                </div>
+                <div className="ph-balls">{balls.map((b,i)=><span key={i} className={bc(b)}>{b}</span>)}</div>
               </div>
               <div className="ph-block ph-grid-block">
                 <div className="ph-lbl">📊 Stats</div>
-                <div className="ph-g4">
-                  {statsA.map((s,i) => (
-                    <div key={i} className="ph-gs">
-                      <span className={'ph-gv'+(s.gold?' ph-gold':s.red?' ph-red':'')}>{s.v}</span>
-                      <span className="ph-gl">{s.l}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="ph-g3">
-                  {statsB.map((s,i) => (
-                    <div key={i} className="ph-gs">
-                      <span className={'ph-gv'+(s.red?' ph-red':'')}>{s.v}</span>
-                      <span className="ph-gl">{s.l}</span>
-                    </div>
-                  ))}
-                </div>
+                <div className="ph-g4">{statsA.map((s,i)=><div key={i} className="ph-gs"><span className={'ph-gv'+(s.gold?' ph-gold':s.red?' ph-red':'')}>{s.v}</span><span className="ph-gl">{s.l}</span></div>)}</div>
+                <div className="ph-g3">{statsB.map((s,i)=><div key={i} className="ph-gs"><span className={'ph-gv'+(s.red?' ph-red':'')}>{s.v}</span><span className="ph-gl">{s.l}</span></div>)}</div>
               </div>
             </div>
           </div>
-
           <div className="ph-block ph-comm-block">
             <div className="ph-lbl">🎙️ Commentary</div>
-            {comms.map((c,i) => (
+            {comms.map((c,i)=>(
               <div key={i} className="ph-comm">
-                <span className={commCls(c.type)}>{c.ball}</span>
+                <span className={cc(c.type)}>{c.ball}</span>
                 <span className="ph-comm-text">{c.text}</span>
               </div>
             ))}
           </div>
-
           <div className="ph-bottom-row">
             <div className="ph-block ph-report-block">
               <div className="ph-lbl">🤖 AI Report</div>
-              <p className="ph-report-p">Rahul's 67★ keeps chase alive. RRR 30.67 near impossible — 2 wkts left. Team A favourites.</p>
+              <p className="ph-report-p">Rahul's 67★ keeps chase alive. RRR 30.67 near impossible — 2 wkts left.</p>
               <div className="ph-rtags">
                 <span className="ph-rtag">Rahul 67★</span>
                 <span className="ph-rtag ph-rtag-r">Vikram 2/18</span>
@@ -204,20 +212,11 @@ function PhoneMockup() {
             </div>
             <div className="ph-block ph-summary-block">
               <div className="ph-lbl">📝 Summary</div>
-              {summary.map((r,i) => (
-                <div key={i} className="ph-sum-row">
-                  <span className="ph-sum-l">{r.l}</span>
-                  <span className="ph-sum-v">{r.v}</span>
-                </div>
-              ))}
+              {summary.map((r,i)=><div key={i} className="ph-sum-row"><span className="ph-sum-l">{r.l}</span><span className="ph-sum-v">{r.v}</span></div>)}
             </div>
           </div>
-
           <div className="ph-nav">
-            {[
-              {ic:'🏠',l:'Home'},{ic:'📊',l:'Stats'},{ic:'🏏',l:'Live'},
-              {ic:'🏆',l:'Board'},{ic:'👤',l:'Profile'},
-            ].map((n,i) => (
+            {[{ic:'🏠',l:'Home'},{ic:'📊',l:'Stats'},{ic:'🏏',l:'Live'},{ic:'🏆',l:'Board'},{ic:'👤',l:'Profile'}].map((n,i)=>(
               <div key={i} className={'ph-nav-item'+(i===2?' ph-nav-active':'')}>
                 <span className="ph-nav-ic">{n.ic}</span>
                 <span className="ph-nav-l">{n.l}</span>
@@ -230,105 +229,238 @@ function PhoneMockup() {
   )
 }
 
+/* ═══════════════════════════════════════════
+   MAIN PAGE — single scroll
+═══════════════════════════════════════════ */
 export default function Landing() {
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const [showTop,  setShowTop]  = useState(false)
+  const [activeTab, setActiveTab] = useState('live')
+  const feat = features.find(f => f.id === activeTab)
+
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40)
+      setShowTop(window.scrollY > 500)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  const scrollTo = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    setMenuOpen(false)
+  }
 
   return (
-    <>
-      <div className="bg-layer bg-base"    />
-      <div className="bg-layer bg-grad"    />
-      <div className="bg-layer bg-dots"    />
+    <div className="page-root">
+
+      {/* Fixed bg layers */}
+      <div className="bg-layer bg-base"/>
+      <div className="bg-layer bg-grad"/>
+      <div className="bg-layer bg-dots"/>
       <div className="bg-layer bg-vignette"/>
-      <div className="bg-layer bg-noise"   />
-      <BgField />
+      <div className="bg-layer bg-noise"/>
 
-      <div className="landing">
-        <nav className="top-nav">
-          <div className="nav-inner">
-            <div className="nav-brand" onClick={() => { navigate('/'); setMenuOpen(false) }}>
-              <img src={logo} alt="GullyStat" className="nav-logo" />
-              <span className="nav-name">GullyStat</span>
-            </div>
-            <div className="nav-links">
-              {navLinks.map(l => (
-                <button key={l.label} className="nav-link" onClick={() => navigate(l.path)}>
-                  {l.label}
-                </button>
-              ))}
-            </div>
-            <div className="nav-cta-desktop">
-              <button className="nav-login"  onClick={() => navigate('/login')}>Login</button>
-              <button className="nav-launch" onClick={() => navigate('/dashboard')}>Launch App</button>
-            </div>
-            <button
-              className={'nav-burger' + (menuOpen ? ' nav-burger-open' : '')}
-              onClick={() => setMenuOpen(o => !o)}
-              aria-label="Menu"
-            >
-              <span /><span /><span />
-            </button>
+      {/* ── NAV ── */}
+      <nav className={`top-nav ${scrolled ? 'nav-scrolled' : ''}`}>
+        <div className="nav-inner">
+          <div className="nav-brand" onClick={() => window.scrollTo({top:0,behavior:'smooth'})}>
+            <img src={logo} alt="GullyStat" className="nav-logo"/>
+            <span className="nav-name">GULLYSTAT</span>
           </div>
-          <div className={'nav-mobile-menu' + (menuOpen ? ' nav-mobile-open' : '')}>
+          <div className="nav-links">
             {navLinks.map(l => (
-              <button key={l.label} className="nav-mobile-link"
-                onClick={() => { navigate(l.path); setMenuOpen(false) }}>
-                {l.label}
-              </button>
+              <button key={l.id} className="nav-link" onClick={() => scrollTo(l.id)}>{l.label}</button>
             ))}
-            <div className="nav-mobile-divider" />
-            <button className="nav-mobile-login"  onClick={() => { navigate('/login');     setMenuOpen(false) }}>Login</button>
-            <button className="nav-mobile-launch" onClick={() => { navigate('/dashboard'); setMenuOpen(false) }}>🏏 Launch App</button>
           </div>
-        </nav>
+          <div className="nav-cta-d">
+            <button className="nav-login" onClick={() => navigate('/login')}>Login</button>
+            <button className="nav-launch" onClick={() => navigate('/dashboard')}>🏏 Launch App</button>
+          </div>
+          <button className={`nav-burger ${menuOpen?'open':''}`} onClick={()=>setMenuOpen(o=>!o)}>
+            <span/><span/><span/>
+          </button>
+        </div>
+        {menuOpen && (
+          <div className="nav-mob-drop">
+            {navLinks.map(l=>(
+              <button key={l.id} className="nav-mob-link" onClick={()=>scrollTo(l.id)}>{l.label}</button>
+            ))}
+            <div className="nav-mob-sep"/>
+            <button className="nav-mob-launch" onClick={()=>{navigate('/dashboard');setMenuOpen(false)}}>🏏 Launch App</button>
+          </div>
+        )}
+      </nav>
 
-        <main className="hero">
+      {/* ── BACK TO TOP ── */}
+      <button className={`back-top ${showTop?'visible':''}`} onClick={()=>window.scrollTo({top:0,behavior:'smooth'})}>
+        <span className="bt-arrow">↑</span>
+        <span>HOME</span>
+      </button>
+
+      {/* ══════════════════════════════════════
+          SECTION 1 — HERO  bg: #07110a
+      ══════════════════════════════════════ */}
+      <section className="sec-hero">
+        <canvas id="bg-canvas"/>
+        <div className="hero-wrap">
           <div className="hero-left">
-            <div className="badge">
-              <span className="badge-dot" />
-              Local Cricket · Professional Analytics
+            <div className="hero-badge">
+              <span className="hero-dot"/>
+              LOCAL CRICKET · PROFESSIONAL ANALYTICS
             </div>
-            <h1 className="title">
-              Your gully.<br />
-              Your stats.<br />
-              <span className="title-accent">Your legacy.</span>
+            <h1 className="hero-h1">
+              Your gully.<br/>
+              Your stats.<br/>
+              <span className="hero-accent">Your legacy.</span>
             </h1>
-            <p className="subtitle">
-              What Cricinfo does for internationals —<br />
+            <p className="hero-sub">
+              What Cricinfo does for internationals —<br/>
               GullyStat does for your mohalla.
             </p>
-            <div className="tag-row">
-              {tags.map(t => <span className="tag" key={t}>{t}</span>)}
+            <div className="hero-tags">
+              {['Hundrum · 100-ball','Overum · Custom','Live Scoring','AI Reports','Ghost Mode','Leaderboards'].map(t=>(
+                <span key={t} className="hero-tag">{t}</span>
+              ))}
             </div>
-            <div className="btn-row">
-              <button className="btn-main"    onClick={() => navigate('/dashboard')}>🏏 Start Tracking</button>
-              <button className="btn-outline" onClick={() => navigate('/features')}>See Features →</button>
+            <div className="hero-btns">
+              <button className="btn-gold" onClick={()=>navigate('/dashboard')}>🏏 Start Tracking</button>
+              <button className="btn-ghost" onClick={()=>scrollTo('features')}>See Features ↓</button>
             </div>
-            <div className="stats-bar">
-              {[
-                { v: '6',    l: 'Game Modes' },
-                { v: '100+', l: 'Matches'    },
-                { v: 'AI',   l: 'Reports'    },
-                { v: '👻',   l: 'Ghost Mode' },
-              ].map((s,i) => (
-                <div className="stat" key={i}>
-                  <span className="stat-val">{s.v}</span>
-                  <span className="stat-lbl">{s.l}</span>
+            <div className="hero-stats">
+              {[{v:'6',l:'Game Modes'},{v:'100+',l:'Matches'},{v:'AI',l:'Reports'},{v:'👻',l:'Ghost Mode'}].map((s,i)=>(
+                <div key={i} className="hstat">
+                  <span className="hstat-v">{s.v}</span>
+                  <span className="hstat-l">{s.l}</span>
                 </div>
               ))}
             </div>
           </div>
-
           <div className="hero-right">
-            <div className="phone-glow" />
-            <PhoneMockup />
-            <div className="phone-tag">
-              <span>📱</span>
-              <span>Available on Mobile</span>
+            <div className="phone-glow"/>
+            <PhoneMockup/>
+            <div className="phone-tag">📱 Available on Mobile</div>
+          </div>
+        </div>
+        {/* Scroll hint */}
+        <div className="scroll-hint" onClick={()=>scrollTo('features')}>
+          <span className="scroll-hint-text">scroll down</span>
+          <span className="scroll-hint-arrow">↓</span>
+        </div>
+      </section>
+
+      {/* ══ FLOWING WAVE 1 — hero → features ══ */}
+      <BubbleWave parentBg="#07110a" childBg="#0d1420" speed="7s"/>
+
+      {/* ══════════════════════════════════════
+          SECTION 2 — FEATURES  bg: #0d1420
+      ══════════════════════════════════════ */}
+      <section className="sec-block sec-navy" id="features">
+        <div className="sec-inner">
+          <div className="sec-eyebrow">CORE FEATURES</div>
+          <h2 className="sec-title">What GullyStat<br/><span className="sec-accent">gives you</span></h2>
+          <p className="sec-sub">Every feature designed for how gully cricket is actually played — loud, local, and legendary.</p>
+
+          {/* Tab explorer */}
+          <div className="ft-explorer">
+            <div className="ft-tabs">
+              {features.map(f=>(
+                <button key={f.id}
+                  className={'ft-tab'+(activeTab===f.id?' ft-tab-on':'')}
+                  onClick={()=>setActiveTab(f.id)}
+                  style={activeTab===f.id?{'--ac':f.accent}:{}}>
+                  <span className="ft-tab-em">{f.emoji}</span>
+                  <span className="ft-tab-name">{f.title}</span>
+                </button>
+              ))}
+            </div>
+            <div className="ft-detail" style={{'--ac':feat.accent}}>
+              <div className="ft-detail-tag">{feat.tag}</div>
+              <div className="ft-detail-top">
+                <span className="ft-detail-em">{feat.emoji}</span>
+                <h3 className="ft-detail-title">{feat.title}</h3>
+              </div>
+              <p className="ft-detail-desc">{feat.desc}</p>
+              <ul className="ft-bullets">
+                {feat.bullets.map((b,i)=>(
+                  <li key={i} className="ft-bullet">
+                    <span className="ft-bullet-dot" style={{background:feat.accent,boxShadow:`0 0 6px ${feat.accent}`}}/>
+                    {b}
+                  </li>
+                ))}
+              </ul>
+              <button className="ft-detail-cta"
+                style={{color:feat.accent,borderColor:feat.accent+'44',background:feat.accent+'12'}}
+                onClick={()=>navigate('/dashboard')}>
+                Try it now →
+              </button>
             </div>
           </div>
-        </main>
-      </div>
-    </>
+        </div>
+      </section>
+
+      {/* ══ FLOWING WAVE 2 — features → formats ══ */}
+      <BubbleWave parentBg="#0d1420" childBg="#110a1e" speed="5s"/>
+
+      {/* ══════════════════════════════════════
+          SECTION 3 — FORMATS  bg: #110a1e
+      ══════════════════════════════════════ */}
+      <section className="sec-block sec-deep" id="formats">
+        <div className="sec-inner">
+          <div className="sec-eyebrow">GAME MODES</div>
+          <h2 className="sec-title">Play your<br/><span className="sec-accent">way</span></h2>
+          <p className="sec-sub">6 formats for every kind of gully cricket. Pick your game.</p>
+          <div className="fmt-grid">
+            {formatCards.map((f,i)=>(
+              <div key={i} className="fmt-card" style={{'--fc':f.color}}>
+                <div className="fmt-num">0{i+1}</div>
+                <div className="fmt-pill" style={{color:f.color,background:f.color+'18',border:`1px solid ${f.color}44`}}>{f.name}</div>
+                <div className="fmt-tag">{f.tag}</div>
+                <p className="fmt-desc">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══ FLOWING WAVE 3 — formats → about/CTA ══ */}
+      <BubbleWave parentBg="#110a1e" childBg="#030d07" speed="9s"/>
+
+      {/* ══════════════════════════════════════
+          SECTION 4 — CTA / ABOUT  bg: #030d07
+      ══════════════════════════════════════ */}
+      <section className="sec-block sec-darkest" id="about">
+        <div className="sec-inner cta-inner">
+          <div className="cta-left">
+            <div className="sec-eyebrow">FREE · NO SETUP · JUST CRICKET</div>
+            <h2 className="sec-title">Ready to track<br/><span className="cta-accent">your legacy?</span></h2>
+            <p className="sec-sub">Join mohallas across India scoring every gully match like it's an international.</p>
+            <div className="cta-btns">
+              <button className="btn-gold lg" onClick={()=>navigate('/dashboard')}>🏏 Start Tracking — Free</button>
+              <button className="btn-ghost" onClick={()=>window.scrollTo({top:0,behavior:'smooth'})}>↑ Back to Top</button>
+            </div>
+          </div>
+          <div className="cta-checklist">
+            {[
+              {e:'🏏',t:'Live ball-by-ball scoring'},
+              {e:'🤖',t:'AI match reports after every game'},
+              {e:'📊',t:'Career stats tracked per format'},
+              {e:'👻',t:'Ghost mode — play anonymous'},
+              {e:'🏆',t:'Mohalla leaderboards'},
+              {e:'⚔️',t:'Head-to-head records & rivalries'},
+            ].map((f,i)=>(
+              <div key={i} className="cta-check">
+                <span className="cta-check-em">{f.e}</span>
+                {f.t}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+    </div>
   )
 }

@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-ro
 import { useState } from 'react'
 import logo from './assets/logo.png'
 import Landing       from './pages/Landing'
-import Features      from './pages/Features'
 import Dashboard     from './pages/Dashboard'
 import StartMatch    from './pages/StartMatch'
 import LiveScorer    from './pages/LiveScorer'
@@ -80,16 +79,12 @@ function Layout({ children }) {
 export default function App() {
   return (
     <BrowserRouter basename="/gullystat">
-
-      {/* ── Click burst effect — fires on every page, never blocks clicks ── */}
       <ClickEffect />
-
       <Routes>
-        {/* Landing pages — no sidebar */}
-        <Route path="/"         element={<Landing  />} />
-        <Route path="/features" element={<Features />} />
+        {/* ── Single scroll landing page (Hero + Features + Formats + CTA) ── */}
+        <Route path="/" element={<Landing />} />
 
-        {/* App pages — with sidebar */}
+        {/* ── App pages with sidebar ── */}
         <Route path="/dashboard"      element={<Layout><Dashboard /></Layout>} />
         <Route path="/start-match"    element={<Layout><StartMatch /></Layout>} />
         <Route path="/live-scorer"    element={<Layout><LiveScorer /></Layout>} />
@@ -102,7 +97,6 @@ export default function App() {
         <Route path="/tournaments"    element={<Layout><Tournaments /></Layout>} />
         <Route path="/ghost-profile"  element={<Layout><GhostProfile /></Layout>} />
       </Routes>
-
     </BrowserRouter>
   )
 }
