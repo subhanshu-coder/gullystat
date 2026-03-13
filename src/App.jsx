@@ -14,6 +14,7 @@ import HeadToHead    from './pages/HeadToHead'
 import Tournaments   from './pages/Tournaments'
 import GhostProfile  from './pages/GhostProfile'
 import ClickEffect   from './components/ClickEffect'
+import Login from './components/Login'
 import './App.css'
 
 const navItems = [
@@ -83,6 +84,7 @@ export default function App() {
       <Routes>
         {/* ── Single scroll landing page (Hero + Features + Formats + CTA) ── */}
         <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
 
         {/* ── App pages with sidebar ── */}
         <Route path="/dashboard"      element={<Layout><Dashboard /></Layout>} />
