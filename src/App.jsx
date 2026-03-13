@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import logo from './assets/logo.png'
-import Landing       from './pages/Landing'
+import Landing       from './components/Landing'
 import Dashboard     from './pages/Dashboard'
 import StartMatch    from './pages/StartMatch'
 import LiveScorer    from './pages/LiveScorer'
